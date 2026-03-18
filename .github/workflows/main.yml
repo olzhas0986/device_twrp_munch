@@ -1,0 +1,41 @@
+name: TWRP Builder
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+
+      - name: Install Dependencies
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update && sudo apt upgrade -y
+          sudo apt install gawk build-essential bc bison ca-certificates ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick libncurses5-dev:i386 lib32readline-dev lib32z1-dev liblz4-tool libncurses6 libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev python3
+
+      - name: Build
+        run: |
+          git clone https://github.com/olzhas0986/device_twrp_munch twrp
+          cd twrp
+          mkdir -p ~/bin && export PATH=~/bin:$PATH && curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && chmod a+x ~/bin/repo
+          chmod +x .github/workflows/build.sh
+          ./.github/workflows/build.sh
+
+      
+      - name: Upload to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd twrp
+          tag_name="twrp-munch-$(date +%Y%m%d-%H%M)"
+          gh release create "$tag_name" \
+          out/target/product/munch/boot.img \
+          --title "TWRP for POCO F4 (munch) - Build $tag_name" \
+          --notes "The building was completed through GitHub Actions."
+        
