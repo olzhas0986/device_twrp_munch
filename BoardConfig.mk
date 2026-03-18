@@ -12,7 +12,17 @@ ALLOW_MISSING_DEPENDENCIES := true
 
 # A/B
 AB_OTA_UPDATER := true
-AB_OTA_PARTITIONS +=
+AB_OTA_PARTITIONS += \
+    boot \
+    dtbo \
+    system \
+    system_ext \
+    product \
+    vendor \
+    vendor_boot \
+    odm \
+    vbmeta \
+    vbmeta_system \
 BOARD_USES_RECOVERY_AS_BOOT := true
 
 # Architecture
