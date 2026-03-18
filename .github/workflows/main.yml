@@ -21,7 +21,7 @@ jobs:
         run: |
           git clone https://github.com/olzhas0986/device_twrp_munch twrp
           cd twrp
-          find . -maxdepth 1 -not -name '.' -not -name '.github' -exec rm -rf {} +
+          find . -maxdepth 1 -not -name '.' -not -name '.github' -not -name '.git' -exec rm -rf {} +
           mkdir -p ~/bin && export PATH=~/bin:$PATH && curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && chmod a+x ~/bin/repo
           chmod +x .github/workflows/build.sh
           ./.github/workflows/build.sh
